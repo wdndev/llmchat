@@ -40,7 +40,7 @@ const routers = [
         component: Home
     },
     {
-        path: '/conversation',
+        path: '/conversation/:id',
         name: 'conversation',
         component: Conversation
     },

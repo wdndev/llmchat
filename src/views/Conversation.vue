@@ -1,6 +1,10 @@
 <template>
-    <div class="w-[80%] mx-auto h-[85%] overflow-auto pt-2">
-        <MessageList :messages="messages" />
+    <div class="h-[5%] bg-gray-200 border-b border-gray-300 flex items-center px-3 justify-between" v-if="conversation">
+        <h3 class="text-semiblod text-gray-900">{{ conversation?.title }}</h3>
+        <span class="text-sm text-gray-500">{{ conversation?.updatedAt }}</span>
+    </div>
+    <div class="w-[80%] mx-auto h-[80%] overflow-auto pt-2">
+        <MessageList :messages="filteredMessages" />
     </div>
     <div class="w-[80%] mx-auto h-[15%] flex items-center">
         <MessageInput></MessageInput>
@@ -8,17 +12,24 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from 'vue'
-    import { MessageProps} from '../types'
+    import { ref, watch } from 'vue'
+    import { useRoute } from 'vue-router'
+    import {MessageProps, ConversationProps} from '../types'
     import MessageInput from '../components/MessageInput.vue'
     import MessageList from '../components/MessageList.vue'
+    // 测试数据
+    import { messages, conversations } from '../testData'
 
-    const messages: MessageProps[] = [
-        {id: 1,content: 'hello', type: 'question', conversationId: 1, status: 'streaming', createAt: '2023-01-01', updateAt: '2023-01-01' },
-        {id: 2,content: '111111111', type: 'answer', conversationId: 1, status: 'streaming', createAt: '2023-01-01', updateAt: '2023-01-01' },
-        {id: 3,content: '22222222222', type: 'question', conversationId: 1, status: 'streaming', createAt: '2023-01-01', updateAt: '2023-01-01' },
-        {id: 4,content: '33333333333', type: 'answer', conversationId: 1, status: 'streaming', createAt: '2023-01-01', updateAt: '2023-01-01' },
-        {id: 5,content: '4444444444', type: 'question', conversationId: 1, status: 'streaming', createAt: '2023-01-01', updateAt: '2023-01-01' },
-        {id: 6,content: '', type: 'answer', conversationId: 1, status: 'loading', createAt: '2023-01-01', updateAt: '2023-01-01' }
-    ]
+    const route = useRoute()
+    const filteredMessages = ref<MessageProps[]>([])
+    const conversation = ref<ConversationProps>()
+    let conversationId = parseInt(route.params.id as string)
+
+    filteredMessages.value = messages.filter(message => message.conversationId === conversationId)
+    conversation.value = conversations.find(item => item.id === conversationId)
+    watch(() => route.params.id, (newID: string) => {
+        conversationId = parseInt(newID)
+        filteredMessages.value = messages.filter(message => message.conversationId === conversationId)
+        conversation.value = conversations.find(item => item.id === conversationId)
+    })
 </script>

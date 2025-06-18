@@ -3,9 +3,9 @@
 export interface ConversationProps {
     id: number;
     title: string;
-    selectModel: string;
-    createAt: string;
-    updateAt: string;
+    selectedModel: string;
+    createdAt: string;
+    updatedAt: string;
     providerId: number;
 }
 
@@ -13,11 +13,11 @@ export interface ConversationProps {
 export interface ProviderProps {
     id: number;
     name: string;
-    titel?: string;
+    title?: string;
     desc?: string;
-    acatar?: string;
-    createAt: string;
-    updateAt: string;
+    avatar?: string;
+    createdAt: string;
+    updatedAt: string;
     models: string[];
 }
 
@@ -29,6 +29,6 @@ export interface MessageProps {
     type: 'question' | 'answer'
     conversationId: number;
     status?: MessageStatus;
-    createAt: string;
-    updateAt: string;
+    createdAt: string;
+    updatedAt: string;
 }
