@@ -8,7 +8,7 @@
             <a @click.prevent="goToConversation(item.id)">
                 <div class=" flex justify-between items-center text-sm leading-5 text-gray-500 ">
                     <span>{{ item.selectedModel }}</span>
-                    <span>{{ item.updatedAt }}</span>
+                    <span>{{ dayjs(item.updatedAt).format('YYYY-MM-DD') }}</span>
                 </div>
             </a>
             <h2 class=" font-semibold leading-6 text-gray-900 truncate">{{ item.title }}</h2>
@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts" setup>
+    import dayjs from 'dayjs';
     import { ConversationProps } from '../types'
     import {useRouter, RouterLink} from 'vue-router'
     defineProps<{

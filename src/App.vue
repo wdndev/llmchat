@@ -49,50 +49,16 @@
     import ProviderSelect from './components/ProviderSelect.vue'
     import MessageInput from './components/MessageInput.vue'
     import Button from './components/Button.vue'
-    import { db } from './db'
+    import { db, initProviders } from './db'
     // 测试数据
-    import {conversations, providers} from './testData'
+    // import {conversations, providers} from './testData'
+
+    const conversations = ref<ConversationProps[]>([])
 
     onMounted(async () => {
-        // 插入
-        // const insertedId = await db.providers.add(providers[0])
-        // console.log("insertedId: ", insertedId)
-
-        // // 查询
-        // const items = await db.providers.toArray()
-        // console.log("items: ", items)
-
-        // // 查找
-        // const item = await db.providers.where({id: 1}).toArray()
-        // console.log("item: ", item)
-
-        // 更新
-        // const updateItem = await db.providers.update(1, {desc: 'updata  desc'})
-        // console.log("updateItem: ", updateItem)
-
-        // 删除
-        // const deleteItem = await db.providers.delete(1)
-        // console.log("deleteItem: ", deleteItem)
+        await initProviders()
+        conversations.value = await db.conversations.toArray()
     })
-
-
-    // const selectedModel = ref('')
-    // const items: ConversationProps[] = [
-    //     {id: 1, title: 'Conversation 1', selectModel: 'gpt-3.5-turbo', createdAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 2, title: 'Conversation 2', selectModel: 'gpt-3.5-turbo', createdAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 3, title: 'Conversation 3', selectModel: 'gpt-3.5-turbo', createdAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 4, title: 'Conversation 4', selectModel: 'gpt-3.5-turbo', createdAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 5, title: 'Conversation 5', selectModel: 'gpt-3.5-turbo', createdAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 6, title: 'Conversation 6', selectModel: 'gpt-3.5-turbo', createdAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 7, title: 'Conversation 7', selectModel: 'gpt-3.5-turbo', createdAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 8, title: 'Conversation 8', selectModel: 'gpt-3.5-turbo', createdAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 9, title: 'Conversation 9', selectModel: 'gpt-3.5-turbo', createdAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    // ]
-
-    // const providers: ProviderProps[] = [
-    //     {id: 1, name: 'OpenAI', titel: 'OpenAI', desc: 'OpenAI is a company that provides artificial intelligence services.', acatar: '', createdAt:'2023-01-01', updateAt:'2023-01-01', models: ['gpt-3.5-turbo1', 'gpt-4.1']},
-    //     {id: 2, name: 'ChatGPT', titel: 'ChatGPT', desc: 'ChatGPT is a chatbot that provides artificial intelligence services.', acatar: '',createdAt:'2023-01-01', updateAt:"2023-01-01", models: ['gpt-3.5-turbo2', 'gpt-4.2']}
-    // ]
 
 
     console.log('Hello World!')

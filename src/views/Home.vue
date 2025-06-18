@@ -1,33 +1,57 @@
 <template>
     <div class="w-[80%] mx-auto h-full">
         <div class="flex items-center h-[85%]">
-            <ProviderSelect :items="providers" v-model="selectedModel"></ProviderSelect>
+            <ProviderSelect :items="providers" v-model="currentProvider"></ProviderSelect>
         </div>
         <div class="flex items-center h-[15%]">
-            <MessageInput> </MessageInput>
+            <MessageInput @create="createConversation"> </MessageInput>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { ref } from 'vue'
+    import { computed, onMounted, ref } from 'vue'
+    import { useRouter } from 'vue-router'
     import { ProviderProps } from '../types'
     import ProviderSelect from '../components/ProviderSelect.vue'
     import MessageInput from '../components/MessageInput.vue'
-    import { providers } from '../testData'
+    import { db, initProviders } from '../db'
+    // import { providers } from '../testData'
 
-    const selectedModel = ref('')
-    // const items: ConversationProps[] = [
-    //     {id: 1, title: 'Conversation 1', selectModel: 'gpt-3.5-turbo', createAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 2, title: 'Conversation 2', selectModel: 'gpt-3.5-turbo', createAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 3, title: 'Conversation 3', selectModel: 'gpt-3.5-turbo', createAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 4, title: 'Conversation 4', selectModel: 'gpt-3.5-turbo', createAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 5, title: 'Conversation 5', selectModel: 'gpt-3.5-turbo', createAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 6, title: 'Conversation 6', selectModel: 'gpt-3.5-turbo', createAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 7, title: 'Conversation 7', selectModel: 'gpt-3.5-turbo', createAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 8, title: 'Conversation 8', selectModel: 'gpt-3.5-turbo', createAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    //     {id: 9, title: 'Conversation 9', selectModel: 'gpt-3.5-turbo', createAt: '2023-01-01', updateAt: '2023-01-01', providerId: 1},
-    // ]
+    const router = useRouter()
+    const currentProvider = ref('')
+    const providers = ref<ProviderProps[]>([])
+    
+    onMounted(async () => {
+        providers.value = await db.providers.toArray()
+    })
+
+    const modelInfo = computed(() => {
+        const [providerId, selectedModel ] = currentProvider.value.split('/')
+        return {
+            providerId: parseInt(providerId),
+            selectedModel
+        }
+    })
+    const createConversation = async (question: string) => { 
+        const { providerId, selectedModel } = modelInfo.value
+        const currentDate = new Date().toISOString()
+        const conversationId = await db.conversations.add({
+            title: question,
+            providerId,
+            selectedModel,
+            createdAt: currentDate,
+            updatedAt: currentDate
+        })
+        const newMessageId = await db.messages.add({
+            content: question,
+            conversationId,
+            createdAt: currentDate,
+            updatedAt: currentDate,
+            type: 'question'
+        })
+        router.push(`/conversation/${conversationId}?init=${newMessageId}`)
+    }
 
 
 </script>
