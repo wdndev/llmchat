@@ -42,8 +42,10 @@
     import ConversationList from './components/ConversationList.vue'
     import ProviderSelect from './components/ProviderSelect.vue'
     import MessageInput from './components/MessageInput.vue'
+    import Button from './components/Button.vue'
     // 测试数据
     import {conversations} from './testData'
+
 
     const selectedModel = ref('')
     // const items: ConversationProps[] = [
