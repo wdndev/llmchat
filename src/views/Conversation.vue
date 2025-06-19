@@ -13,27 +13,33 @@
 
 <script setup lang="ts">
     import dayjs from 'dayjs';
-    import { ref, watch, onMounted } from 'vue'
+    import { ref, watch, onMounted, computed} from 'vue'
     import { useRoute } from 'vue-router'
     import {MessageProps, ConversationProps, MessageStatus} from '../types'
     import MessageInput from '../components/MessageInput.vue'
     import MessageList from '../components/MessageList.vue'
+    import { useConversationStore } from '../stores/conversation';
     import { db } from '../db'
+import { c } from 'vite/dist/node/types.d-aGj9QkWt';
     // 测试数据
     // import { messages, conversations } from '../testData'
 
     const route = useRoute()
+    const conversationStore = useConversationStore()
     const filteredMessages = ref<MessageProps[]>([])
-    const conversation = ref<ConversationProps>()
-    let conversationId = parseInt(route.params.id as string)
+    // const conversation = ref<ConversationProps>()
+    let conversationId = ref(parseInt(route.params.id as string))
     const initMessageId = parseInt(route.query.init as string)
+    const conversation = computed(() => {
+        return conversationStore.getConversationById(conversationId.value)
+    })
     let lastQuestion = ''
 
     const creatingInitialMessage = async () => {
         const createdData: Omit<MessageProps, 'id'> = {
             content: '',
             type: 'answer',
-            conversationId,
+            conversationId: conversationId.value,
             status: 'loading',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
@@ -60,16 +66,16 @@
     // conversation.value = conversations.find(item => item.id === conversationId)
     
     watch(() => route.params.id, async (newID: string) => {
-        conversationId = parseInt(newID)
-        filteredMessages.value = await db.messages.where({conversationId}).toArray()
-        conversation.value = await db.conversations.where({id: conversationId}).first()
+        conversationId.value = parseInt(newID)
+        filteredMessages.value = await db.messages.where({conversationId: conversationId.value}).toArray()
+        // conversation.value = await db.conversations.where({id: conversationId}).first()
     })
 
     onMounted(async () => { 
-        conversation.value = await db.conversations.where({id: conversationId}).first()
-        filteredMessages.value = await db.messages.where({conversationId}).toArray()
+        // conversation.value = await db.conversations.where({id: conversationId}).first()
+        filteredMessages.value = await db.messages.where({conversationId: conversationId.value}).toArray()
         if (initMessageId) {
-            const lastMessage = await db.messages.where({conversationId}).last()
+            const lastMessage = await db.messages.where({conversationId: conversationId.value}).last()
             lastQuestion = lastMessage?.content || ''
             await creatingInitialMessage()
         }

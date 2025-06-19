@@ -2,7 +2,7 @@
     <dev class=" flex items-center justify-between h-screen"> 
         <div class=" w-[300px] bg-gray-200 h-full border-r border-gray-300">
             <div class="h-[90%] overflow-y-auto">
-                <ConversationList :items="conversations"/>
+                <ConversationList :items="items"/>
             </div>
             <dev class="h-[10%] grid grid-cols-2 gap-2 p-2">
                 <RouterLink to="/">
@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-    import {ref, onMounted} from 'vue'
+    import {ref, onMounted, computed} from 'vue'
     import {ConversationProps, ProviderProps} from './types'
     import { Icon } from "@iconify/vue";
     import {RouterLink, RouterView} from 'vue-router'
@@ -50,14 +50,19 @@
     import MessageInput from './components/MessageInput.vue'
     import Button from './components/Button.vue'
     import { db, initProviders } from './db'
+    import { useConversationStore } from './stores/conversation'
     // 测试数据
     // import {conversations, providers} from './testData'
 
-    const conversations = ref<ConversationProps[]>([])
+    // const conversations = ref<ConversationProps[]>([])
+    const conversationStore = useConversationStore()
+    const items = computed(() => conversationStore.items)
 
     onMounted(async () => {
         await initProviders()
-        conversations.value = await db.conversations.toArray()
+        // conversations.value = await db.conversations.toArray()
+        // conversationStore.items = await db.conversations.toArray()
+        conversationStore.fetchConversations()
     })
 
 
