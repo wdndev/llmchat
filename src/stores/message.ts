@@ -30,9 +30,10 @@ export const useMessageStore = defineStore('message', {
             const currentMessage = this.items.find(item => item.id === messageId)
             if (currentMessage) {
                 const updatedData = {
-                    content: currentMessage.content + data.result,
+                    // content: currentMessage.content + data.result,
                     status: data.is_end ? 'finished' : 'streaming' as MessageStatus,
-                    updatedAt: new Date().toISOString()
+                    updatedAt: new Date().toISOString(),
+                    ...(!data.is_end && {content: currentMessage.content + data.result})
                 }
                 await db.messages.update(messageId, updatedData)
                 const index  = this.items.findIndex(item => item.id === messageId)
@@ -45,6 +46,9 @@ export const useMessageStore = defineStore('message', {
     getters: {
         getLastQuestion: (state) => (conversationId: number) => {
             return state.items.findLast(item => item.conversationId === conversationId && item.type === 'question')
-        }
+        },
+        isMessageLoading: (state) =>{
+            return state.items.some(item => item.status === 'loading' || item.status === 'streaming')
+        },
     }
 })

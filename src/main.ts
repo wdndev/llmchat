@@ -7,6 +7,7 @@ import OpenAI from 'openai';
 import fs from 'fs'
 
 import { CreateChatProps } from './types';
+import { SelectContent } from 'radix-vue';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -24,14 +25,13 @@ const createWindow = async () => {
   });
   ipcMain.on('start-chat', async (event, data: CreateChatProps) => { 
     console.log('start-chat message: ', data)
-    const { messageId, providerName, selectedModel, content } = data
+    const { messageId, providerName, selectedModel, messages } = data
     if (providerName === 'qianfan') {
       const client = new ChatCompletion()
       const streams = await client.chat({
-        model: selectedModel,
-        messages: [{ role: 'user', content }],
+        messages: messages as any,
         stream: true,
-      })
+      }, selectedModel)
       for await (const chunk of streams as AsyncIterableIterator<any>) {
         const {is_end, result} = chunk
         const sendContent = {

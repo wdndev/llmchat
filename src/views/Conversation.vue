@@ -7,7 +7,7 @@
         <MessageList :messages="filteredMessages" />
     </div>
     <div class="w-[80%] mx-auto h-[15%] flex items-center">
-        <MessageInput></MessageInput>
+        <MessageInput @create="sendNewMessage" v-model="inputValue" :disabled="messageStore.isMessageLoading"></MessageInput>
     </div>
 </template>
 
@@ -21,10 +21,12 @@
     import { useConversationStore } from '../stores/conversation';
     import { useMessageStore } from '../stores/message';
     import { db } from '../db'
+import { send } from 'vite';
 
     // 测试数据
     // import { messages, conversations } from '../testData'
 
+    const inputValue = ref('')
     const route = useRoute()
     const conversationStore = useConversationStore()
     const messageStore = useMessageStore()
@@ -39,6 +41,29 @@
     const filteredMessages = computed(() => {
         return messageStore.items
     })
+    const sendedMessages = computed(() => filteredMessages.value
+        .filter(message => message.status !== 'loading')
+        .map(message => {
+            return {
+                role: message.type === 'question' ? 'user' : 'assistant',
+                content: message.content,
+            }
+        })
+    )
+    const sendNewMessage = async (question: string) => { 
+        if (question) {
+            const date = new Date().toISOString()
+            await messageStore.createMessage({
+                content: question,
+                conversationId: conversationId.value,
+                createdAt: date,
+                updatedAt: date,
+                type: 'question'
+            })
+            inputValue.value = ''
+            creatingInitialMessage()
+        }
+    }
     const lastQuestion = computed(() => messageStore.getLastQuestion(conversationId.value))
 
     const creatingInitialMessage = async () => {
@@ -58,7 +83,8 @@
                     messageId: newMessageId,
                     providerName: provider.name,
                     selectedModel: conversation.value.selectedModel,
-                    content: lastQuestion.value?.content || ''
+                    // content: lastQuestion.value?.content || ''
+                    messages: sendedMessages.value
                 })
             }
         }

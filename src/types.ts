@@ -34,8 +34,14 @@ export interface MessageProps {
 }
 
 // 渲染进程向主进程发送消息格式，用于调用大模型
-export interface CreateChatProps {
+export interface ChatMessageProps {
+    role: string;
     content: string;
+    imagePath?: string;
+}
+export interface CreateChatProps {
+    // content: string;
+    messages: ChatMessageProps[];
     providerName: string;
     selectedModel: string;
     messageId: number;

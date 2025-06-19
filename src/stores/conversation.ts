@@ -3,13 +3,15 @@ import { ConversationProps } from '../types'
 import { db } from '../db'
 
 export interface ConversationStore {
-    items: ConversationProps[]
+    items: ConversationProps[];
+    selectId: number;
 }
 
 export const useConversationStore = defineStore('conversation', {
     state: (): ConversationStore => {
         return {
-            items: []
+            items: [],
+            selectId: -1
         }
     },
     actions: {

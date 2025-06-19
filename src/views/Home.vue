@@ -4,7 +4,7 @@
             <ProviderSelect :items="providers" v-model="currentProvider"></ProviderSelect>
         </div>
         <div class="flex items-center h-[15%]">
-            <MessageInput @create="createConversation"> </MessageInput>
+            <MessageInput @create="createConversation" :disabled="currentProvider === ''"> </MessageInput>
         </div>
     </div>
 </template>
