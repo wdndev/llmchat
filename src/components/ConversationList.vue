@@ -23,8 +23,8 @@
 <script lang="ts" setup>
     import dayjs from 'dayjs';
     import { ConversationProps } from '../types'
-    import {useRouter, RouterLink} from 'vue-router'
-    import {useConversationStore} from '../stores/conversation'
+    import { useRouter, RouterLink} from 'vue-router'
+    import { useConversationStore} from '../stores/conversation'
     defineProps<{
         items: ConversationProps[]
     }>()

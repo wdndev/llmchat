@@ -19,9 +19,10 @@
     import MessageInput from '../components/MessageInput.vue'
     import MessageList from '../components/MessageList.vue'
     import { useConversationStore } from '../stores/conversation';
+    import { useProviderStore} from  '../stores/provider'
     import { useMessageStore } from '../stores/message';
     import { db } from '../db'
-import { send } from 'vite';
+
 
     // 测试数据
     // import { messages, conversations } from '../testData'
@@ -30,6 +31,7 @@ import { send } from 'vite';
     const route = useRoute()
     const conversationStore = useConversationStore()
     const messageStore = useMessageStore()
+    const providerStore = useProviderStore()
     // const filteredMessages = ref<MessageProps[]>([])
 
     // const conversation = ref<ConversationProps>()
@@ -77,7 +79,8 @@ import { send } from 'vite';
         }
         const newMessageId = await messageStore.createMessage(createdData)
         if (conversation.value) {
-            const provider = await db.providers.where({id: conversation.value.providerId}).first()
+            // const provider = await db.providers.where({id: conversation.value.providerId}).first()
+            const provider = providerStore.getProviderById(conversation.value.providerId)
             if (provider) {
                 await window.electronAPI.startChat({
                     messageId: newMessageId,

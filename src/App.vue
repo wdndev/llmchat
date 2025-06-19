@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-    import {ref, onMounted, computed} from 'vue'
+    import {ref, onMounted, computed, provide} from 'vue'
     import {ConversationProps, ProviderProps} from './types'
     import { Icon } from "@iconify/vue";
     import {RouterLink, RouterView} from 'vue-router'
@@ -51,11 +51,13 @@
     import Button from './components/Button.vue'
     import { db, initProviders } from './db'
     import { useConversationStore } from './stores/conversation'
+    import { useProviderStore} from  './stores/provider'
     // 测试数据
     // import {conversations, providers} from './testData'
 
     // const conversations = ref<ConversationProps[]>([])
     const conversationStore = useConversationStore()
+    const providerStore = useProviderStore()
     const items = computed(() => conversationStore.items)
 
     onMounted(async () => {
@@ -63,6 +65,7 @@
         // conversations.value = await db.conversations.toArray()
         // conversationStore.items = await db.conversations.toArray()
         conversationStore.fetchConversations()
+        providerStore.fetchProviders()
     })
 
 
