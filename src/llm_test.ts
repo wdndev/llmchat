@@ -2,6 +2,18 @@
 import 'dotenv/config'
 import OpenAI from 'openai';
 import fs from 'fs'
+import  {ChatCompletion} from '@baiducloud/qianfan'
+
+async function callBaidu() {
+  const client = new ChatCompletion()
+  const streams = await client.chat({
+    model: "ERNIE-Speed-128K",
+    messages: [{ role: 'user', content: "你好" }],
+    stream: true,
+  })
+
+  console.log("baidu: ", streams)
+}
 async function callQwenTurbo() {
   try {
     // 初始化OpenAI客户端（兼容Qwen模型）
@@ -142,4 +154,4 @@ async function callQwenLong() {
 
 
 // 执行调用
-callQwenTurbo();
+callBaidu();

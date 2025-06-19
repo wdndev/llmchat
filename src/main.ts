@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import  {ChatCompletion} from '@baiducloud/qianfan'
@@ -6,105 +6,11 @@ import 'dotenv/config'
 import OpenAI from 'openai';
 import fs from 'fs'
 
+import { CreateChatProps } from './types';
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
-}
-async function qianfan() { 
-  const client = new ChatCompletion()
-  const resp = await client.chat({
-    messages: [
-      {
-        role: 'user',
-        content: '你好'
-      }
-    ]
-  }, "ERNIE-Speed-128K")
-  console.log(resp)
-}
-async function qwen_plus_openai() {
-  const client = new OpenAI({
-    apiKey: process.env['LLM_API_KEY'],
-    baseURL: process.env['LLM_BASE_URL']
-  })
-  const model_name : string = process.env['LLM_MODEL_NAME'] || "qwen-max"
-  console.log(`model_name: ${model_name}`)
-  console.log(`LLM_API_KEY: ${process.env['LLM_API_KEY']}`)
-  console.log(`LLM_BASE_URL: ${process.env['LLM_BASE_URL']}`)
-
-  const resp = await client.chat.completions.create({
-    model: model_name,
-    messages: [
-      {
-        role: 'user',
-        content: '你好'
-      }
-    ]
-  })
-  console.log("resp", resp.choices[0].message)
-}
-async function qwen_vl_openai() {
-  const imageBuffer = await fs.promises.readFile('C:/Users/dd/Desktop/Llama3_Repo.jpeg')
-  const base64Image = imageBuffer.toString('base64');
-  // console.log("base64:   ", base64Image)
-  const client = new OpenAI({
-    apiKey: process.env['LLM_API_KEY'],
-    baseURL: process.env['LLM_BASE_URL']
-  })
-  const model_name : string = process.env['LLM_MODEL_NAME'] || "qwen-max"
-  console.log(`model_name: ${model_name}`)
-  console.log(`LLM_API_KEY: ${process.env['LLM_API_KEY']}`)
-  console.log(`LLM_BASE_URL: ${process.env['LLM_BASE_URL']}`)
-
-  const resp = await client.chat.completions.create({
-    model: model_name,
-    messages: [
-      {
-        role: "system",
-        content: "You are a helpful assistant."
-      },
-      {
-        role: "user",
-        content: [
-          {type: "text", text: "图中是什么动物？"},
-          {type: "image_url", image_url: {url: `data:image/jpeg;base64,${base64Image}`}}
-        ]
-      }
-    ]
-  })
-
-  console.log("resp", resp.choices[0].message)
-}
-
-async function qwen_file_upload() { 
-  const client = new OpenAI({
-    apiKey: process.env['LLM_API_KEY'],
-    baseURL: process.env['LLM_BASE_URL'],
-  })
-  const model_name : string = process.env['LLM_MODEL_NAME'] || "qwen-plus"
-  const fileObj = await client.files.create({
-    file: fs.createReadStream("C:/Users/dd/Desktop/aaaa.pdf"),
-    purpose: "file-extract" as any,
-  });
-  // console.log("fileObj", fileObj)
-  const resp = await client.chat.completions.create({
-    model: model_name,
-    messages: [
-      {
-        role: "system",
-        content: "You are a helpful assistant.",
-      },
-      {
-        role: "system",
-        content: `fileid://${fileObj.id}`,
-      },
-      {
-        role: "user",
-        content: "文件里面讲什么？",
-      }
-    ]
-  })
-  console.log("resp", resp.choices[0].message)
 }
 
 const createWindow = async () => {
@@ -116,6 +22,29 @@ const createWindow = async () => {
       preload: path.join(__dirname, 'preload.js'),
     },
   });
+  ipcMain.on('start-chat', async (event, data: CreateChatProps) => { 
+    console.log('start-chat message: ', data)
+    const { messageId, providerName, selectedModel, content } = data
+    if (providerName === 'qianfan') {
+      const client = new ChatCompletion()
+      const streams = await client.chat({
+        model: selectedModel,
+        messages: [{ role: 'user', content }],
+        stream: true,
+      })
+      for await (const chunk of streams as AsyncIterableIterator<any>) {
+        const {is_end, result} = chunk
+        const sendContent = {
+          messageId,
+          data: {
+            result,
+            is_end 
+          }
+        }
+        mainWindow.webContents.send('update-message', sendContent)
+      }
+    }
+  })
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {

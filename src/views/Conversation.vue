@@ -15,7 +15,7 @@
     import dayjs from 'dayjs';
     import { ref, watch, onMounted } from 'vue'
     import { useRoute } from 'vue-router'
-    import {MessageProps, ConversationProps} from '../types'
+    import {MessageProps, ConversationProps, MessageStatus} from '../types'
     import MessageInput from '../components/MessageInput.vue'
     import MessageList from '../components/MessageList.vue'
     import { db } from '../db'
@@ -27,6 +27,7 @@
     const conversation = ref<ConversationProps>()
     let conversationId = parseInt(route.params.id as string)
     const initMessageId = parseInt(route.query.init as string)
+    let lastQuestion = ''
 
     const creatingInitialMessage = async () => {
         const createdData: Omit<MessageProps, 'id'> = {
@@ -42,6 +43,17 @@
             ...createdData,
             id: newMessageId
         })
+        if (conversation.value) {
+            const provider = await db.providers.where({id: conversation.value.providerId}).first()
+            if (provider) {
+                await window.electronAPI.startChat({
+                    messageId: newMessageId,
+                    providerName: provider.name,
+                    selectedModel: conversation.value.selectedModel,
+                    content: lastQuestion
+                })
+            }
+        }
     }
 
     // filteredMessages.value = messages.filter(message => message.conversationId === conversationId)
@@ -57,8 +69,31 @@
         conversation.value = await db.conversations.where({id: conversationId}).first()
         filteredMessages.value = await db.messages.where({conversationId}).toArray()
         if (initMessageId) {
+            const lastMessage = await db.messages.where({conversationId}).last()
+            lastQuestion = lastMessage?.content || ''
             await creatingInitialMessage()
         }
+        window.electronAPI.onUpdateMessage(async (streamData) => {
+            console.log('streamData', streamData)
+            // 更新数据库 + 更新页面
+            const {messageId, data} = streamData
+            const currentMessage = await db.messages.where({id: messageId}).first()
+            if (currentMessage) {
+                const updatedData= {
+                    content: currentMessage.content + data.result,
+                    status: data.is_end ? 'finished' : 'streaming' as MessageStatus,
+                    updatedAt: new Date().toISOString(),
+                }
+                // 数据库更新
+                await db.messages.update(messageId, updatedData)
+                // 页面更新
+                const index = filteredMessages.value.findIndex(item => item.id === messageId)
+                if (index !== -1) {
+                    filteredMessages.value[index] = {...filteredMessages.value[index], ...updatedData}
+                }
+
+            }
+        })
     })
 
 </script>

@@ -21,7 +21,7 @@ export interface ProviderProps {
     models: string[];
 }
 
-// 
+// 消息数据定义
 export type MessageStatus = 'loading' | 'streaming' | 'finished'
 export interface MessageProps {
     id: number;
@@ -32,3 +32,22 @@ export interface MessageProps {
     createdAt: string;
     updatedAt: string;
 }
+
+// 渲染进程向主进程发送消息格式，用于调用大模型
+export interface CreateChatProps {
+    content: string;
+    providerName: string;
+    selectedModel: string;
+    messageId: number;
+}
+// 主进程向渲染进程发送的消息，大模型的返回
+export interface UpdatedStreamData {
+    messageId: number;
+    data: {
+        is_end: boolean;
+        result: string;
+        is_error?: boolean;
+    }
+}
+
+export type OnUpdatedCallback = (data: UpdatedStreamData) => void;
