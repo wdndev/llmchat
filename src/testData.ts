@@ -38,7 +38,7 @@ export const providers: ProviderProps[] = [
   {     
     id: 2,
     name: 'dashscope', 
-    title: '阿里灵积',
+    title: '阿里百炼',
     desc: '通义千问',
     // https://help.aliyun.com/zh/dashscope/developer-reference/api-details?spm=a2c4g.11186623.0.0.5bf41507xgULX5#b148acc634pfc
     models: ['qwen-turbo', 'qwen-plus', 'qwen-max', 'qwen-vl-plus'],

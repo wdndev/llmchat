@@ -43,6 +43,30 @@ const createWindow = async () => {
         }
         mainWindow.webContents.send('update-message', sendContent)
       }
+    } else if (providerName === 'dashscope') { 
+        const client = new OpenAI({
+            apiKey: process.env['QWEN_API_KEY'],
+            baseURL: process.env['QWEN_BASE_URL']
+        });
+        const streams = await client.chat.completions.create({
+          model: selectedModel,
+          messages: messages as any,
+          stream: true,
+        })
+        for await (const chunk of streams) {
+            const choice = chunk.choices[0]
+            const sendContent = {
+              messageId,
+              data: {
+                is_end: choice.finish_reason === 'stop',
+                result: choice.delta.content || ''
+              }
+            }
+            mainWindow.webContents.send('update-message', sendContent)
+        }
+
+    } else {
+      console.log("dashscope: ", providerName)
     }
   })
 
