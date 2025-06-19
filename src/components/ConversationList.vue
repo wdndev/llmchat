@@ -6,7 +6,7 @@
                 'bg-gray-100 hover:bg-gray-300': conversationStore.selectId === item.id,
                 'bg-white hover:bg-gray-200': conversationStore.selectId !== item.id
             }"
-            v-for="item in items"
+            v-for="item in sortedItems"
             :key="item.id"
             @contextmenu.prevent="showContextMenu($event, item.id)"
             @click="hideContextMenuIfVisible"
@@ -14,7 +14,7 @@
             <a @click.prevent="goToConversation(item.id)">
                 <div class=" flex justify-between items-center text-sm leading-5 text-gray-500 ">
                     <span>{{ item.selectedModel }}</span>
-                    <span>{{ dayjs(item.updatedAt).format('YYYY-MM-DD') }}</span>
+                    <span>{{ dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm') }}</span>
                 </div>
                 <h2 class=" font-semibold leading-6 text-gray-900 truncate">{{ item.title }}</h2>
             </a>
@@ -47,12 +47,12 @@
 <script lang="ts" setup>
     import dayjs from 'dayjs';
     import {Icon} from '@iconify/vue'
-    import { ref, onMounted, onUnmounted } from 'vue';
+    import { ref, computed, onMounted, onUnmounted } from 'vue';
     import { ConversationProps } from '../types'
     import { useRouter} from 'vue-router'
     import { useConversationStore} from '../stores/conversation'
 
-    defineProps<{
+    const props = defineProps<{
         items: ConversationProps[]
     }>()
 
@@ -66,6 +66,14 @@
         })
         conversationStore.selectId = id
     }
+
+    // 添加排序后的计算属性
+    const sortedItems = computed(() => {
+        return [...props.items].sort((a, b) => {
+            // 按照更新时间降序排列（最新的在前）
+            return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        })
+    })
 
     // 右键菜单状态
     const contextMenuVisible = ref(false)

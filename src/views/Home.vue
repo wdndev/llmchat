@@ -45,7 +45,7 @@
         let copiedImagePath: string | undefined
         if (imagePath) {
             try {
-                copiedImagePath = await electronAPI.copyImageToUserDir(imagePath)
+                copiedImagePath = await window.electronAPI.copyImageToUserDir(imagePath)
                 console.log('copiedImagePath: ', copiedImagePath)
             } catch (error) {
                 console.log('Failed to copy image: ', error)
