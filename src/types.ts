@@ -55,5 +55,9 @@ export interface UpdatedStreamData {
         is_error?: boolean;
     }
 }
-
+// LLM输出到渲染进程的回调函数
 export type OnUpdatedCallback = (data: UpdatedStreamData) => void;
+
+export interface MessageListIntance {
+    ref: HTMLDivElement;
+}

@@ -34,6 +34,7 @@ import Conversation from './views/Conversation.vue'
 import Settings from './views/Settings.vue'
 import { useConversationStore } from './stores/conversation'
 import './index.css';
+import 'highlight.js/styles/github-dark.min.css'
 
 const routers = [
     {
