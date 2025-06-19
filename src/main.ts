@@ -4,7 +4,7 @@ import started from 'electron-squirrel-startup';
 import  {ChatCompletion} from '@baiducloud/qianfan'
 import 'dotenv/config'
 import OpenAI from 'openai';
-import fs from 'fs'
+import fs from 'fs/promises'
 
 import { CreateChatProps } from './types';
 import { SelectContent } from 'radix-vue';
@@ -22,6 +22,43 @@ const createWindow = async () => {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
+  });
+  // ipcMain.handle('copy-image-to-user-dir', async (event, sourcePath: string) => {
+  //   const userDataPath = app.getPath('userData');
+  //   const imageDir = path.join(userDataPath, 'images');
+  //   await fs.mkdir(imageDir, { recursive: true })
+  //   const fileName = path.basename(sourcePath);
+  //   const targetPath = path.join(imageDir, fileName);
+  //   await fs.copyFile(sourcePath, targetPath);
+  //   return targetPath;
+  // });
+  ipcMain.handle('copy-image-to-user-dir', async (event, dataUrl: string) => {
+    // 创建用户目录
+    const userDataPath = app.getPath('userData');
+    const imageDir = path.join(userDataPath, 'images');
+    await fs.mkdir(imageDir, { recursive: true })
+    console.log('user Dir Data', imageDir);
+    // 从 DataURL中提取数据
+    const matches = dataUrl.match(/^data:(.+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      throw new Error('Invalid data URL format');
+    }
+    const mimeType = matches[1];
+    const base64Data = matches[2];
+    const buffer = Buffer.from(base64Data, 'base64');
+    
+    // 生成唯一文件名
+    const fileExt = mimeType === 'image/jpeg' ? 'jpg' : 
+                   mimeType === 'image/png' ? 'png' : 
+                   mimeType === 'image/gif' ? 'gif' : 'unknown';
+    const fileName = `img_${Date.now()}.${fileExt}`;
+    const targetPath = path.join(imageDir, fileName);
+
+    // 写入文件
+    await fs.writeFile(targetPath, buffer);
+
+    return targetPath;
+
   });
   ipcMain.on('start-chat', async (event, data: CreateChatProps) => { 
     console.log('start-chat message: ', data)

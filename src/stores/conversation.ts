@@ -27,6 +27,10 @@ export const useConversationStore = defineStore('conversation', {
             })
             return newCId
         },
+        async deleteConversation(id: number) {
+            await db.conversations.delete(id)
+            this.items = this.items.filter(item => item.id !== id)
+        }
     },
     getters: { 
         totalNumber: (state) => state.items.length,
