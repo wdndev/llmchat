@@ -17,15 +17,32 @@ if (started) {
   app.quit();
 }
 
+// 设置应用程序图标（用于任务栏和系统托盘）
+const setAppIcon = () => {
+  if (process.platform === 'win32' || process.platform === 'linux') {
+    // Windows和Linux需要设置app.setAppUserModelId()以确保任务栏图标正确显示
+    app.setAppUserModelId(app.name);
+  }
+};
+
 const createWindow = async () => {
   // 初始化配置
   const config = await configManager.load()
   console.log(`config: ${JSON.stringify(config)}`)
 
+  // console.log("wwwwwwwwwwwwwwww: ", path.join(__dirname, 'assets/llmchat_ico_256x256.ico'))
+
+  const iconPath = process.platform === 'win32' 
+      ? path.join(__dirname, 'assets/llmchat_ico_256x256.ico') // Windows使用.ico格式
+      : process.platform === 'darwin' 
+        ? path.join(__dirname, 'assets/llmchat_ico_256x256.icns') // macOS使用.icns格式
+        : path.join(__dirname, 'assets/llmchat_ico_256x256.png'); // Linux使用.png格式
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 750,
+    icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
@@ -57,17 +74,15 @@ const createWindow = async () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-
-  // llm test
-  // await qwen_vl_openai()
-  // await qwen_file_upload()
-
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  setAppIcon();
+  createWindow();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
