@@ -25,21 +25,11 @@ export const useMessageStore = defineStore('message', {
             })
             return newMsgId
         },
-        async updateMessage(streamData: UpdatedStreamData) { 
-            const { messageId, data } = streamData
-            const currentMessage = this.items.find(item => item.id === messageId)
-            if (currentMessage) {
-                const updatedData = {
-                    // content: currentMessage.content + data.result,
-                    status: data.is_end ? 'finished' : 'streaming' as MessageStatus,
-                    updatedAt: new Date().toISOString(),
-                    ...(!data.is_end && {content: currentMessage.content + data.result})
-                }
-                await db.messages.update(messageId, updatedData)
-                const index  = this.items.findIndex(item => item.id === messageId)
-                if (index !== -1) {
-                    this.items[index] = {...this.items[index], ...updatedData}
-                }
+        async updateMessage(messageId: number,  updatedData: Partial<MessageProps>) { 
+            await db.messages.update(messageId, updatedData)
+            const index  = this.items.findIndex(item => item.id === messageId)
+            if (index !== -1) {
+                this.items[index] = {...this.items[index], ...updatedData}
             }
         },
     },

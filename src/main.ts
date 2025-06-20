@@ -1,13 +1,16 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, protocol, net} from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import  {ChatCompletion} from '@baiducloud/qianfan'
 import 'dotenv/config'
 import OpenAI from 'openai';
 import fs from 'fs/promises'
+import url from 'url'
+import {lookup} from 'mime-types'
+
 
 import { CreateChatProps } from './types';
-import { SelectContent } from 'radix-vue';
+import { convertMessages } from './helper'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -15,7 +18,7 @@ if (started) {
 }
 
 const createWindow = async () => {
-  // Create the browser window.
+  // 创建浏览器窗口
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 750,
@@ -23,16 +26,17 @@ const createWindow = async () => {
       preload: path.join(__dirname, 'preload.js'),
     },
   });
-  // ipcMain.handle('copy-image-to-user-dir', async (event, sourcePath: string) => {
-  //   const userDataPath = app.getPath('userData');
-  //   const imageDir = path.join(userDataPath, 'images');
-  //   await fs.mkdir(imageDir, { recursive: true })
-  //   const fileName = path.basename(sourcePath);
-  //   const targetPath = path.join(imageDir, fileName);
-  //   await fs.copyFile(sourcePath, targetPath);
-  //   return targetPath;
-  // });
-  ipcMain.handle('copy-image-to-user-dir', async (event, dataUrl: string) => {
+
+  protocol.handle('safe-file', async (request) => {
+    console.log("wwwwwwwww: ", request.url)
+    const filePath = decodeURIComponent(request.url.slice('safe-file://'.length))
+    console.log(filePath)
+    const newFilePath = url.pathToFileURL(filePath).toString()
+    console.log(newFilePath)
+    return net.fetch(newFilePath)
+  })
+
+  ipcMain.handle('copy-image-to-user-dir', async (event: Electron.IpcMainInvokeEvent, dataUrl: string) => {
     // 创建用户目录
     const userDataPath = app.getPath('userData');
     const imageDir = path.join(userDataPath, 'images');
@@ -60,9 +64,11 @@ const createWindow = async () => {
     return targetPath;
 
   });
-  ipcMain.on('start-chat', async (event, data: CreateChatProps) => { 
+  
+  ipcMain.on('start-chat', async (event: Electron.IpcMainEvent, data: CreateChatProps) => { 
     console.log('start-chat message: ', data)
     const { messageId, providerName, selectedModel, messages } = data
+    const convertedMessages = await convertMessages(messages)
     if (providerName === 'qianfan') {
       const client = new ChatCompletion()
       const streams = await client.chat({
@@ -85,9 +91,10 @@ const createWindow = async () => {
             apiKey: process.env['QWEN_API_KEY'],
             baseURL: process.env['QWEN_BASE_URL']
         });
+        
         const streams = await client.chat.completions.create({
           model: selectedModel,
-          messages: messages as any,
+          messages: convertedMessages as any,
           stream: true,
         })
         for await (const chunk of streams) {

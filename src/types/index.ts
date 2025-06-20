@@ -31,6 +31,7 @@ export interface MessageProps {
     status?: MessageStatus;
     createdAt: string;
     updatedAt: string;
+    imagePath?: string;
 }
 
 // 渲染进程向主进程发送消息格式，用于调用大模型

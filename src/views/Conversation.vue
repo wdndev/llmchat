@@ -15,7 +15,7 @@
     import dayjs from 'dayjs';
     import { ref, watch, onMounted, computed, nextTick} from 'vue'
     import { useRoute } from 'vue-router'
-    import {MessageProps, MessageListIntance} from '../types'
+    import {MessageProps, MessageListIntance, MessageStatus} from '../types'
     import MessageInput from '../components/MessageInput.vue'
     import MessageList from '../components/MessageList.vue'
     import { useConversationStore } from '../stores/conversation';
@@ -44,24 +44,37 @@
     const filteredMessages = computed(() => {
         return messageStore.items
     })
+    // 传入主进程的信息
     const sendedMessages = computed(() => filteredMessages.value
         .filter(message => message.status !== 'loading')
         .map(message => {
             return {
                 role: message.type === 'question' ? 'user' : 'assistant',
                 content: message.content,
+                ...(message.imagePath && { imagePath: message.imagePath })
             }
         })
     )
-    const sendNewMessage = async (question: string) => { 
+    const sendNewMessage = async (question: string, imagePath?: string) => { 
         if (question) {
+            let copiedImagePath: string | undefined;
+            if (imagePath) {
+                try {
+                    copiedImagePath = await window.electronAPI.copyImageToUserDir(imagePath)
+                    console.log('copiedImagePath', copiedImagePath)
+                } catch (error) {
+                    console.log('Failed to copy images: ', error)
+                }
+            }
+
             const date = new Date().toISOString()
             await messageStore.createMessage({
                 content: question,
                 conversationId: conversationId.value,
                 createdAt: date,
                 updatedAt: date,
-                type: 'question'
+                type: 'question',
+                ...(copiedImagePath && { imagePath: copiedImagePath })
             })
             inputValue.value = ''
             creatingInitialMessage()
@@ -125,6 +138,7 @@
             await creatingInitialMessage()
         }
         let currentMessageListHeight = 0
+        let streamContent = ''  // 大模型那面过来的信息
         const checkAndScrollToButtom = async () => { 
             if (messageListRef.value) {
                 const newHeight = messageListRef.value.ref.clientHeight
@@ -136,11 +150,21 @@
         }
         window.electronAPI.onUpdateMessage(async (streamData) => {
             console.log('streamData', streamData)
+            const {messageId, data} = streamData
+            streamContent += data.result
+            const updatedData = {
+                content: streamContent,
+                status: data.is_end ? 'finished' : 'streaming' as MessageStatus,
+                updatedAt: new Date().toISOString(),
+            }
             // 更新数据库 + 更新页面
-            messageStore.updateMessage(streamData)
+            await messageStore.updateMessage(messageId, updatedData)
             // await messageScrollToBottom()
             await nextTick()
             checkAndScrollToButtom()
+            if (data.is_end) { 
+                streamContent = ''
+            }
         })
     })
 

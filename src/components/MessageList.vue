@@ -7,6 +7,7 @@
                         {{ dayjs(message.createdAt).format('YYYY-MM-DD') }}
                     </div>
                     <div class="message-question bg-green-700 text-white p-2 rounded-md" v-if="message.type === 'question'">
+                        <img v-if="message.imagePath" :src="`safe-file://${message.imagePath}`" alt="Message image" class="h-24 w-24 object-cover rounded block">
                         {{ message.content }}
                     </div>
                     <div class="message-answer bg-gray-200 text-gray-700 p-2 rounded-md" v-else>
