@@ -1,14 +1,14 @@
-import { app, BrowserWindow, ipcMain, protocol, net} from 'electron';
+import { app, BrowserWindow, ipcMain, protocol} from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import 'dotenv/config'
 import fs from 'fs/promises'
-import url from 'url'
+import {lookup} from 'mime-types'
 
 
 import { CreateChatProps } from './types';
-import { convertMessages } from './helper'
-import { createProvider } from './providers/createProvider';
+import { createProvider } from './providers/createProvider'
+import { configManager} from './config'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -16,7 +16,11 @@ if (started) {
 }
 
 const createWindow = async () => {
-  // 创建浏览器窗口
+  // 初始化配置
+  const config = await configManager.load()
+  console.log(`config: ${JSON.stringify(config)}`)
+
+  // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 750,
@@ -24,17 +28,20 @@ const createWindow = async () => {
       preload: path.join(__dirname, 'preload.js'),
     },
   });
-
   protocol.handle('safe-file', async (request) => {
-    console.log("wwwwwwwww: ", request.url)
+    console.log("wwwwwwww: ", request.url)
     const filePath = decodeURIComponent(request.url.slice('safe-file://'.length))
-    console.log(filePath)
-    const newFilePath = url.pathToFileURL(filePath).toString()
-    console.log(newFilePath)
-    return net.fetch(newFilePath)
+    console.log("dddddd filePath: ", filePath)
+    const data = await fs.readFile(filePath)
+    return new Response(data, {
+      status: 200,
+      headers:{
+        'Content-Type': lookup(filePath) as string
+      }
+    })
   })
-
-  ipcMain.handle('copy-image-to-user-dir', async (event: Electron.IpcMainInvokeEvent, dataUrl: string) => {
+  
+  ipcMain.handle('copy-image-to-user-dir', async (event, dataUrl: string) => {
     // 创建用户目录
     const userDataPath = app.getPath('userData');
     const imageDir = path.join(userDataPath, 'images');
@@ -62,21 +69,45 @@ const createWindow = async () => {
     return targetPath;
 
   });
-  
   ipcMain.on('start-chat', async (event: Electron.IpcMainEvent, data: CreateChatProps) => { 
     console.log('start-chat message: ', data)
     const { messageId, providerName, selectedModel, messages } = data
-    const convertedMessages = await convertMessages(messages)
-    const provider = createProvider(providerName)
-    const stream = await provider.chat(messages, selectedModel)
-    for await (const chunk of stream) {
-      console.log('llm chunk: ', chunk)
-      const sendContent = {
-        messageId,
-        data: chunk
+    try {
+      const provider = createProvider(providerName)
+      const stream = await provider.chat(messages, selectedModel)
+      for await (const chunk of stream) {
+        console.log('llm chunk: ', chunk)
+        const sendContent = {
+          messageId,
+          data: chunk
+        }
+        mainWindow.webContents.send('update-message', sendContent)
       }
-      mainWindow.webContents.send('update-message', sendContent)
+    } catch (error) {
+      console.error('LLM Chat Error:', error)
+      const errorContent = {
+        messageId,
+        data: {
+          is_error: true,
+          result: error instanceof Error ? error.message : "与AI服务器通信发生错误"
+        }
+      }
+      mainWindow.webContents.send('update-message', errorContent)
     }
+  })
+
+  // Config handlers
+  ipcMain.handle('get-config', () => {
+    return configManager.get()
+  })
+
+  ipcMain.handle('update-config', async (event, newConfig) => {
+    const updatedConfig = await configManager.update(newConfig)
+    // 如果语言发生变化，更新菜单
+    // if (newConfig.language) {
+    //   updateMenu(mainWindow)
+    // }
+    return updatedConfig
   })
 
   // and load the index.html of the app.

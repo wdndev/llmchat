@@ -4,6 +4,8 @@ export interface IElectronAPI {
     startChat: (data: CreateChatProps) => void;
     onUpdateMessage: (callback: OnUpdatedCallback) => any;
     copyImageToUserDir: (dataUrl: string) => Promise<string>;
+    getConfig: () => Promise<AppConfig>;
+    updateConfig: (newConfig: Partial<AppConfig>) => Promise<void>;
 }
 
 declare global {

@@ -22,7 +22,7 @@ export interface ProviderProps {
 }
 
 // 消息数据定义
-export type MessageStatus = 'loading' | 'streaming' | 'finished'
+export type MessageStatus = 'loading' | 'streaming' | 'finished' | 'error'
 export interface MessageProps {
     id: number;
     content: string;
