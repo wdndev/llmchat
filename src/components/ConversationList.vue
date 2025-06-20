@@ -114,6 +114,7 @@
                 await messageStore.deleteMessagesByConversationId(selectedItemId.value)
                 if (conversationStore.selectId === selectedItemId.value) {
                     conversationStore.selectId = -1
+                    router.push('/')
                 }
             } catch (error) {
                 console.error('删除会话失败:', error)

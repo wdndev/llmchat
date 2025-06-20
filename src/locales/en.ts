@@ -14,7 +14,7 @@ export default {
     send: 'Send',
     chinese: 'Chinese',
     english: 'English',
-    newChat: 'New Chat',
+    newChat: 'NewChat',
     settings: 'Settings'
   },
   menu: {

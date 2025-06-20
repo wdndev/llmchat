@@ -6,6 +6,10 @@ export interface IElectronAPI {
     copyImageToUserDir: (dataUrl: string) => Promise<string>;
     getConfig: () => Promise<AppConfig>;
     updateConfig: (newConfig: Partial<AppConfig>) => Promise<void>;
+    showContextMenu: (id: number) => void;
+    onDeleteConversation: (callback: (id: number) => void) => void;
+    onMenuNewConversation: (callback: () => void) => void;
+    onMenuOpenSettings: (callback: () => void) => void;
 }
 
 declare global {

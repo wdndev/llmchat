@@ -7,7 +7,7 @@
             <dev class="h-[8%] grid grid-cols-2 gap-1 p-1">
                 <RouterLink to="/">
                     <Button icon-name="radix-icons:chat-bubble" class="w-full">
-                        新建聊天
+                        {{ t('common.newChat') }}
                     </Button>
                     <!-- <button
                     class="shadow-sm inline-flex items-center justify-center 
@@ -20,7 +20,7 @@
                 </RouterLink>
                 <RouterLink to="/settings">
                     <Button icon-name="radix-icons:gear" plain class="w-full">
-                        应用设置
+                        {{ t('common.settings') }}
                     </Button>
                     <!-- <button
                     class="shadow-sm inline-flex items-center justify-center 
@@ -41,10 +41,12 @@
 </template>
 
 <script setup lang="ts">
-    import {ref, onMounted, computed, provide} from 'vue'
+    import {onMounted, computed} from 'vue'
     import {ConversationProps, ProviderProps} from './types'
     import { Icon } from "@iconify/vue";
-    import {RouterLink, RouterView} from 'vue-router'
+    import {useRouter} from 'vue-router'
+    import { useI18n } from 'vue-i18n'
+    import { initI18n } from './i18n'
     import ConversationList from './components/ConversationList.vue'
     import ProviderSelect from './components/ProviderSelect.vue'
     import MessageInput from './components/MessageInput.vue'
@@ -55,12 +57,24 @@
     // 测试数据
     // import {conversations, providers} from './testData'
 
+    const router = useRouter()
+    const {t} = useI18n()
+
     // const conversations = ref<ConversationProps[]>([])
     const conversationStore = useConversationStore()
     const providerStore = useProviderStore()
     const items = computed(() => conversationStore.items)
 
+    // 监听菜单事件
+    window.electronAPI.onMenuNewConversation(() => {
+        router.push('/')
+    })
+    window.electronAPI.onMenuOpenSettings(() => {
+        router.push('/settings')
+    })
+
     onMounted(async () => {
+        await initI18n()
         await initProviders()
         // conversations.value = await db.conversations.toArray()
         // conversationStore.items = await db.conversations.toArray()
