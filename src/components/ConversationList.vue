@@ -3,8 +3,8 @@
         <div 
             class="item border-gray-300 border-t cursor-pointer p-2"
             :class="{
-                'bg-gray-100 hover:bg-gray-300': conversationStore.selectId === item.id,
-                'bg-white hover:bg-gray-200': conversationStore.selectId !== item.id
+                'bg-gray-200 hover:bg-gray-300': conversationStore.selectId === item.id,
+                'bg-white hover:bg-gray-300': conversationStore.selectId !== item.id
             }"
             v-for="item in sortedItems"
             :key="item.id"
@@ -51,6 +51,7 @@
     import { ConversationProps } from '../types'
     import { useRouter} from 'vue-router'
     import { useConversationStore} from '../stores/conversation'
+    import { useMessageStore} from '../stores/message'
 
     const props = defineProps<{
         items: ConversationProps[]
@@ -58,6 +59,7 @@
 
     const router = useRouter()
     const conversationStore = useConversationStore()
+    const messageStore = useMessageStore()
     const goToConversation = (id: number) => {
         router.push({
             path: `/conversation/${id}`,
@@ -109,6 +111,7 @@
         if (selectedItemId.value !== -1) {
             try {
                 await conversationStore.deleteConversation(selectedItemId.value)
+                await messageStore.deleteMessagesByConversationId(selectedItemId.value)
                 if (conversationStore.selectId === selectedItemId.value) {
                     conversationStore.selectId = -1
                 }
