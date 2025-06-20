@@ -62,3 +62,25 @@ export type OnUpdatedCallback = (data: UpdatedStreamData) => void;
 export interface MessageListIntance {
     ref: HTMLDivElement;
 }
+
+// 模型调用返回数据结构
+export interface UniversalChunkProps {
+    is_end: boolean;
+    result: string;
+}
+export interface BaiduChunkProps {
+    is_end: boolean;
+    result: string;
+}
+
+export interface AppConfig {
+  language: 'zh' | 'en'
+  fontSize: number
+  providerConfigs: Record<string, Record<string, string>>
+}
+
+export const DEFAULT_CONFIG: AppConfig = {
+  language: 'zh',
+  fontSize: 14,
+  providerConfigs: {}
+}

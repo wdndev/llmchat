@@ -2,7 +2,6 @@
 import {ChatMessageProps} from './types'
 import fs from 'fs/promises'
 import { lookup } from 'mime-types'
-import { c } from 'vite/dist/node/types.d-aGj9QkWt';
 export async function convertMessages(messages: ChatMessageProps[]) {
     const convertedMessages: any[] = [];
     for (const message of messages) {

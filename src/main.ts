@@ -1,16 +1,14 @@
 import { app, BrowserWindow, ipcMain, protocol, net} from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
-import  {ChatCompletion} from '@baiducloud/qianfan'
 import 'dotenv/config'
-import OpenAI from 'openai';
 import fs from 'fs/promises'
 import url from 'url'
-import {lookup} from 'mime-types'
 
 
 import { CreateChatProps } from './types';
 import { convertMessages } from './helper'
+import { createProvider } from './providers/createProvider';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -69,48 +67,15 @@ const createWindow = async () => {
     console.log('start-chat message: ', data)
     const { messageId, providerName, selectedModel, messages } = data
     const convertedMessages = await convertMessages(messages)
-    if (providerName === 'qianfan') {
-      const client = new ChatCompletion()
-      const streams = await client.chat({
-        messages: messages as any,
-        stream: true,
-      }, selectedModel)
-      for await (const chunk of streams as AsyncIterableIterator<any>) {
-        const {is_end, result} = chunk
-        const sendContent = {
-          messageId,
-          data: {
-            result,
-            is_end 
-          }
-        }
-        mainWindow.webContents.send('update-message', sendContent)
+    const provider = createProvider(providerName)
+    const stream = await provider.chat(messages, selectedModel)
+    for await (const chunk of stream) {
+      console.log('llm chunk: ', chunk)
+      const sendContent = {
+        messageId,
+        data: chunk
       }
-    } else if (providerName === 'dashscope') { 
-        const client = new OpenAI({
-            apiKey: process.env['QWEN_API_KEY'],
-            baseURL: process.env['QWEN_BASE_URL']
-        });
-        
-        const streams = await client.chat.completions.create({
-          model: selectedModel,
-          messages: convertedMessages as any,
-          stream: true,
-        })
-        for await (const chunk of streams) {
-            const choice = chunk.choices[0]
-            const sendContent = {
-              messageId,
-              data: {
-                is_end: choice.finish_reason === 'stop',
-                result: choice.delta.content || ''
-              }
-            }
-            mainWindow.webContents.send('update-message', sendContent)
-        }
-
-    } else {
-      console.log("dashscope: ", providerName)
+      mainWindow.webContents.send('update-message', sendContent)
     }
   })
 

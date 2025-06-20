@@ -1,10 +1,10 @@
 <template>
     <dev class=" flex items-center justify-between h-screen"> 
-        <div class=" w-[300px] bg-gray-200 h-full border-r border-gray-300">
-            <div class="h-[90%] overflow-y-auto">
+        <div class=" w-[250px] bg-gray-100 h-full border-r border-gray-300">
+            <div class="h-[92%] overflow-y-auto">
                 <ConversationList :items="items"/>
             </div>
-            <dev class="h-[10%] grid grid-cols-2 gap-2 p-2">
+            <dev class="h-[8%] grid grid-cols-2 gap-1 p-1">
                 <RouterLink to="/">
                     <Button icon-name="radix-icons:chat-bubble" class="w-full">
                         新建聊天
