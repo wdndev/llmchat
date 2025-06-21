@@ -42,6 +42,7 @@ const createWindow = async () => {
     width: 1000,
     height: 750,
     icon: iconPath,
+    title: 'LLM Chat',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
@@ -59,7 +60,9 @@ const createWindow = async () => {
   }
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 // This method will be called when Electron has finished

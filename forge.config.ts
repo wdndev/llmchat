@@ -3,17 +3,34 @@ import { MakerSquirrel } from '@electron-forge/maker-squirrel';
 import { MakerZIP } from '@electron-forge/maker-zip';
 import { MakerDeb } from '@electron-forge/maker-deb';
 import { MakerRpm } from '@electron-forge/maker-rpm';
+import { MakerDMG} from '@electron-forge/maker-dmg'
 import { VitePlugin } from '@electron-forge/plugin-vite';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
 
 const config: ForgeConfig = {
+  // 基础打包配置
   packagerConfig: {
-    asar: true,
-    icon: 'assets/llmchat_ico_256x256.ico'
+    name: 'LLMChat',
+    icon: 'assets/llmchat_ico_256x256.ico',
+    asar: true, // 启用asar打包，将源码打包成 asar 档案
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+  makers: [
+    // Windows 安装包
+    new MakerSquirrel({
+      setupIcon: 'assets/llmchat_ico_256x256.ico',
+    }), 
+    // // macOS 安装包
+    // new MakerDMG({
+    //   icon: 'assets/llmchat_ico_256x256.icns',
+    //   format: 'ULFO',   // 兼容性更好 
+    // }),
+    // 压缩包
+    new MakerZIP({}, ['darwin', 'win32']), 
+    // new MakerRpm({}), 
+    // new MakerDeb({})
+  ],
   plugins: [
     new VitePlugin({
       // `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.
