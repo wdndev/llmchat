@@ -7,7 +7,13 @@
                         {{ dayjs(message.createdAt).format('YYYY-MM-DD') }}
                     </div>
                     <div class="message-question bg-green-700 text-white p-2 rounded-md" v-if="message.type === 'question'">
-                        <img v-if="message.imagePath" :src="`safe-file://${message.imagePath}`" alt="Message image" class="h-24 w-24 object-cover rounded block">
+                        <img 
+                            v-if="message.imagePath" 
+                            :src="getImageUrl(message.imagePath)" 
+                            alt="Message image" 
+                            class="h-24 w-24 object-cover rounded block"
+                            @click="showImagePreview(message.imagePath)"
+                        >
                         {{ message.content }}
                     </div>
                     <div class="message-answer bg-gray-200 text-gray-700 p-2 rounded-md" 
@@ -28,6 +34,26 @@
                 </div>
             </div>
         </div>
+        <!-- 图片预览模态框 -->
+        <div 
+            v-if="previewImagePath" 
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+            @click="previewImagePath = ''"
+        >
+            <div class="relative max-w-4xl w-full mx-4">
+                <button 
+                    class="absolute -top-12 right-0 text-white text-2xl hover:text-gray-300 transition-colors"
+                    @click.stop="previewImagePath = ''"
+                >
+                    <Icon icon="eva:close-fill" />
+                </button>
+                <img 
+                    :src="getImageUrl(previewImagePath)" 
+                    alt="Preview image" 
+                    class="max-h-[80vh] w-auto mx-auto rounded-lg shadow-2xl"
+                >
+            </div>
+        </div>
     </div>
 </template>
 
@@ -36,7 +62,6 @@
     import dayjs from 'dayjs';
     import VueMarkdown from 'vue-markdown-render';
     
-    import hljs from 'highlight.js';
     import markdownItHighlight from 'markdown-it-highlightjs';
     import {MessageProps} from '../types'
     import {Icon} from '@iconify/vue'
@@ -44,9 +69,25 @@
     defineProps<{
         messages: MessageProps[]
     }>()
+
     const plugins = [markdownItHighlight]
     // 暴漏 ref
     const _ref = ref<HTMLDivElement>()
     defineExpose({ref: _ref} )
+
+    // 图片预览相关
+    const previewImagePath = ref('');
+
+    const getImageUrl = (imagePath: string) => {
+        // 将反斜杠替换为正斜杠
+        const normalizedPath = imagePath.replace(/\\/g, '/');
+        // 构建并返回安全的URL
+        return `safe-file://${encodeURIComponent(normalizedPath)}`;
+        // return `file://${imagePath}`
+    }
+
+    const showImagePreview = (imagePath: string) => {
+        previewImagePath.value = imagePath;
+    }
 
 </script>

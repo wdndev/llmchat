@@ -1,10 +1,10 @@
-import { app, BrowserWindow, ipcMain, protocol} from 'electron';
+import { app, BrowserWindow, net, protocol, session} from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import 'dotenv/config'
+import url from 'url'
 import fs from 'fs/promises'
 import {lookup} from 'mime-types'
-
 
 import { CreateChatProps } from './types';
 import { createProvider } from './providers/createProvider'
@@ -30,14 +30,13 @@ const createWindow = async () => {
   const config = await configManager.load()
   console.log(`config: ${JSON.stringify(config)}`)
 
-  // console.log("wwwwwwwwwwwwwwww: ", path.join(__dirname, 'assets/llmchat_ico_256x256.ico'))
-
   const iconPath = process.platform === 'win32' 
       ? path.join(__dirname, 'assets/llmchat_ico_256x256.ico') // Windows使用.ico格式
       : process.platform === 'darwin' 
         ? path.join(__dirname, 'assets/llmchat_ico_256x256.icns') // macOS使用.icns格式
         : path.join(__dirname, 'assets/llmchat_ico_256x256.png'); // Linux使用.png格式
 
+  // console.log('iconPath', iconPath)
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1000,
@@ -52,19 +51,6 @@ const createWindow = async () => {
 
   registerIPC(mainWindow)
 
-  protocol.handle('safe-file', async (request) => {
-      console.log("wwwwwwww: ", request.url)
-      const filePath = decodeURIComponent(request.url.slice('safe-file://'.length))
-      console.log("dddddd filePath: ", filePath)
-      const data = await fs.readFile(filePath)
-      return new Response(data, {
-      status: 200,
-      headers:{
-          'Content-Type': lookup(filePath) as string
-      }
-      })
-  })
-
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
@@ -73,13 +59,23 @@ const createWindow = async () => {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
+  protocol.handle('safe-file', async (request) => {
+      console.log("request.url: ", request.url)
+      console.log(request.url)
+      const filePath = decodeURIComponent(request.url.slice('safe-file://'.length))
+      console.log(filePath)
+      const newFilePath = url.pathToFileURL(filePath).toString()
+      console.log(newFilePath)
+      return net.fetch(newFilePath)
+  })
+
   setAppIcon();
   createWindow();
 });
