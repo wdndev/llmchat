@@ -1,41 +1,24 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-
-defineProps<{ msg: string }>()
-
-const count = ref(0)
-</script>
-
 <template>
-  <h3>{{ msg }}</h3>
+  <h3 class="text-2xl font-blod">{{ msg }}</h3>
 
   <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
+    <!-- <button type="button" @click="count++">count is {{ count }}</button> -->
+    <div class="flex flex-row grid-cols-2 gap-8">
+      <Button icon-name="radix-icons:paper-plane" @click="count++"
+        >Button</Button
+      >
+      <div class="text-2xl font-bold">
+        {{ count }}
+      </div>
+    </div>
   </div>
-
-  <p>
-    Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
-  </p>
-  <p>
-    Learn more about IDE Support for Vue in the
-    <a
-      href="https://vuejs.org/guide/scaling-up/tooling.html#ide-support"
-      target="_blank"
-      >Vue Docs Scaling up Guide</a
-    >.
-  </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
 </template>
 
-<style scoped>
-.read-the-docs {
-  color: #888;
-}
-</style>
+<script setup lang="ts">
+import { ref } from "vue";
+import Button from "./Button.vue";
+
+defineProps<{ msg: string }>();
+
+const count = ref(0);
+</script>

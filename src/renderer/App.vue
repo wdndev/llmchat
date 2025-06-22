@@ -1,23 +1,14 @@
+<template>
+  <div
+    class="flex flex-col items-center justify-center h-screen bg-gray-300 space-y-4"
+  >
+    <div class="text-3xl font-bold bg-sky-300">Hello wdndev</div>
+    <HelloWorld
+      msg="Electron + Vite + Vue3 + Typescript + Tailwind + Electron-builder"
+    />
+  </div>
+</template>
+
 <script setup lang="ts">
 import HelloWorld from "./components/HelloWorld.vue";
 </script>
-
-<template>
-  <div>Hello wdndev</div>
-  <HelloWorld msg="Electron + Vite + Vue3 + Typescript + Electron-builder" />
-</template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
