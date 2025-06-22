@@ -1,5 +1,7 @@
+/// <reference path="../types/index.ts" />
 import { createApp } from "vue";
-import "./index.css";
 import App from "@/renderer/App.vue";
+import "./index.css";
 
-createApp(App).mount("#app");
+const app = createApp(App);
+app.mount("#app");

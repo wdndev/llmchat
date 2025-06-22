@@ -6,6 +6,7 @@
     "paths": {
       "@/renderer/*": ["src/renderer/*"]
     },
+    "typeRoots": ["./node_modules/@types", "src/types"],
 
     /* Linting */
     "strict": true,
@@ -16,10 +17,10 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "src/renderer/**/*.ts", 
-    "src/renderer/**/*.tsx", 
-    "src/renderer/**/*.vue", 
+    "src/renderer/**/*.ts",
+    "src/renderer/**/*.vue",
     "src/renderer/**/*.d.ts",
+    "src/renderer/index.css",
     "src/preload/index.ts"
   ]
 }

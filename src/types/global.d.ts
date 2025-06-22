@@ -1,5 +1,5 @@
 export interface IElectronAPI {
-  startChat: (data: CreateChatProps) => void;
+  startChat: (data: any) => void;
 }
 
 declare global {
@@ -7,5 +7,3 @@ declare global {
     electronAPI: IElectronAPI;
   }
 }
-
-declare module "*.css";
