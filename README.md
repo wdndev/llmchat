@@ -1,15 +1,47 @@
-# Vue 3 + TypeScript + Vite
+# Electron Vue3 Template
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Introduction
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+🥳 `Electron` + `Vue3` + `Vite` + `TypeScript` + `Tailwind` + `Electron-builder`
 
+> You can choose to clone the project or fork repository, or download the zip file directly. It is recommended to clone the repository so that you can receive the latest patches.
+>
+> To run a project, you need to have node version 20 or higher and use npm or pnpm as your dependency management tool
+
+## Build Setup
+
+```bash
+# Clone this repository
+$ git clone https://github.com/wdndev/electron-vue3-template.git
+
+# Go into the repository
+$ cd electron-vue3-template
+
+# install dependencies
+$ pnpm install
+
+# serve with hot reload at localhost:9080
+$ pnpm run dev
+
+# build electron application for production
+$ pnpm run build
+```
+
+# Built-in
+
+- [Electron](http://www.electronjs.org/docs)
+- Vue3
+- [vue-router](https://next.router.vuejs.org/index.html)
+- Vite
+- TypeScript
+- Tailwind
+- Electron-builder
 
 ## FAQ
 
 ### Electron install again
 
-pnpm dev 运行报错信息：
+`pnpm dev` start error message：
 
 ```
 E:\02Personal\electron-vue3-template\node_modules\electron\index.js:17
@@ -28,14 +60,12 @@ Error: Electron failed to install correctly, please delete node_modules/electron
     at cjsLoader (node:internal/modules/esm/translators:266:5)
     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:200:7)
 
-Node.js v22.16.0                                                                                                                                                                        ELIFECYCLE  Command failed with exit code 1.       
+Node.js v22.16.0                                                                                                                                                                        ELIFECYCLE  Command failed with exit code 1.
 ```
 
-解决方法：修复 Electron 
-参考：https://github.com/pangxieju/electron-fix
+Solution: Fix Electron
+Reference：https://github.com/pangxieju/electron-fix
 
-1. 首先 pnpm instal或者yarn install
-2. 执行 npm install electron-fix -g
-3. 接着 electron-fix start 修复
-
-
+1. First, `pnpm instal` or `yarn install`
+2. Execute `npm install electron-fix -g`
+3. Then `electron-fix start` for fix electron
