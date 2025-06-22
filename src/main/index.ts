@@ -37,8 +37,6 @@ const createWindow = async () => {
     },
   });
 
-  // mainWindow.loadURL("https://www.electronjs.org/zh/docs/latest");
-
   // and load the index.html of the app.
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);

@@ -2,8 +2,8 @@
   "extends": "./tsconfig.node.json",
   "compilerOptions": {
     "composite": true,
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
       "@/main/*": ["src/main/*"],
