@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-
-// import from '@/renderer'
-
+import HelloWorld from "./components/HelloWorld.vue";
 </script>
 
 <template>
-  <div>
-     Hello wdndev
-  </div>
+  <div>Hello wdndev</div>
   <HelloWorld msg="Electron + Vite + Vue3 + Typescript + Electron-builder" />
 </template>
 
