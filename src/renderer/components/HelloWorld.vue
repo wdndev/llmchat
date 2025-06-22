@@ -2,7 +2,6 @@
   <h3 class="text-2xl font-blod">{{ msg }}</h3>
 
   <div class="card">
-    <!-- <button type="button" @click="count++">count is {{ count }}</button> -->
     <div class="flex flex-row grid-cols-2 gap-8">
       <Button icon-name="radix-icons:paper-plane" @click="count++"
         >Button</Button

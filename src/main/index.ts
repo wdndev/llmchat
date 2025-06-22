@@ -6,7 +6,6 @@ import "dotenv/config";
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
 const createWindow = async () => {
-  // 开发环境图标路径（指向项目根目录下的assets）
   const devIconPath =
     process.platform === "win32"
       ? path.join(__dirname, "../../assets/icons/win/app.ico")
@@ -14,7 +13,6 @@ const createWindow = async () => {
       ? path.join(__dirname, "../../assets/icons/mac/app.icns")
       : path.join(__dirname, "../../assets/icons/linux/app.png");
 
-  // 生产环境图标路径（指向打包后的资源目录）
   const prodIconPath =
     process.platform === "win32"
       ? path.join(__dirname, "../assets/icons/win/app.ico")
@@ -22,15 +20,14 @@ const createWindow = async () => {
       ? path.join(__dirname, "../assets/icons/mac/app.icns")
       : path.join(__dirname, "../assets/icons/linux/app.png");
 
-  // 根据环境选择图标路径
   const iconPath = app.isPackaged ? prodIconPath : devIconPath;
 
-  console.log("图标路径:", iconPath);
+  console.log("iconPath:", iconPath);
 
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 750,
-    title: "LLM Chat",
+    title: "electron-vue3-template",
     icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
