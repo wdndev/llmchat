@@ -5,7 +5,6 @@
     "baseUrl": ".",
     "paths": {
       "@/renderer/*": ["src/renderer/*"]
-
     },
 
     /* Linting */

@@ -2,15 +2,13 @@
   "extends": "./tsconfig.node.json",
   "compilerOptions": {
     "composite": true,
-    "module": "commonjs",
-    "moduleResolution": "Node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "baseUrl": ".",
     "paths": {
       "@/main/*": ["src/main/*"],
       "*": ["node_modules/*"]
-
-    },
-
+    }
   },
   "include": [
     "src/main/**/*.ts", 

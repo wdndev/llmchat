@@ -1,9 +1,11 @@
 module.exports = {
-  appId: 'com.electron.vue3ts',
   productName: 'electron-vue3-template',
+  appId: 'com.electron.vue3ts',
   copyright: 'Copyright © 2025',
+  compression: 'maximum',
+  asar: true,   // 打包格式压缩
   directories: {
-    output: 'release/${version}',
+    output: 'release/${version}',   // 打包输出目录
     buildResources: 'build',
   },
   files: [
@@ -11,16 +13,17 @@ module.exports = {
     'dist/main/**/*',
     'dist/preload/**/*',
   ],
-  asar: true,
-  compression: 'maximum',
+  
+  
   win: {
+    icon: 'assets/icons/win/app.ico',
     target: [
       {
         target: 'nsis',
         arch: ['x64'] // 将 arch 移到 target 内部
       }
     ],
-    icon: 'assets/icons/win/app.ico',
+    
   },
   nsis: {
     oneClick: false,

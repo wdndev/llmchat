@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
+
+// import from '@/renderer'
+
 </script>
 
 <template>
   <div>
-     wwwwwwwwwwwwwwww
+     Hello wdndev
   </div>
-  <HelloWorld msg="Vite + Vue" />
+  <HelloWorld msg="Electron + Vite + Vue3 + Typescript + Electron-builder" />
 </template>
 
 <style scoped>

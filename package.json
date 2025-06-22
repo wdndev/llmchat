@@ -13,24 +13,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/electron-squirrel-startup": "^1.0.2",
-    "electron-squirrel-startup": "^1.0.1",
     "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@types/electron": "^1.6.12",
-    "@types/node": "^24.0.3",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
-    "concurrently": "^9.1.2",
-    "dotenv": "^16.5.0",
-    "electron": "^36.5.0",
+    "electron": "^36.4.0",
     "electron-builder": "^26.0.12",
     "typescript": "~5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-electron": "^0.29.0",
     "vite-plugin-electron-renderer": "^0.14.6",
-    "vue-tsc": "^2.2.8",
-    "wait-on": "^8.0.3"
+    "vue-tsc": "^2.2.8"
   }
 }

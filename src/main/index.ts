@@ -1,7 +1,10 @@
 import { app, BrowserWindow} from 'electron';
 import path from 'path';
 import 'dotenv/config'
-import { setupIPC } from '@/main/modules/ipc'
+// import { setupIPC } from '@/main/modules/ipc'
+
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
 
 const createWindow = async () => {
 
