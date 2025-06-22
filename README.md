@@ -36,6 +36,7 @@ $ pnpm run build
 - TypeScript
 - Tailwind
 - Electron-builder
+- (Electron-vue)[https://simulatedgreg.gitbooks.io/electron-vue/content/cn/]
 
 ## FAQ
 
