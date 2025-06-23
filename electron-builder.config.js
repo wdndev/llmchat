@@ -1,5 +1,5 @@
 module.exports = {
-  productName: "electron-vue3-template",
+  productName: "LLM Chat",
   appId: "com.electron.vue3ts",
   copyright: "Copyright © 2025",
   compression: "maximum",

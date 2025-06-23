@@ -3,9 +3,11 @@ import path from "path";
 import "dotenv/config";
 // import { setupIPC } from '@/main/modules/ipc'
 
-process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
+// import { configManager } from '@/renderer/config/app.config'
+import { configManager } from '@/renderer/config/app.config'
+import { createProvider} from '@/renderer/providers/createProvider'
 
-const createWindow = async () => {
+const getAppIcon = () => { 
   const devIconPath =
     process.platform === "win32"
       ? path.join(__dirname, "../../assets/icons/win/app.ico")
@@ -23,12 +25,18 @@ const createWindow = async () => {
   const iconPath = app.isPackaged ? prodIconPath : devIconPath;
 
   console.log("iconPath:", iconPath);
+  return iconPath;
+};
+const createWindow = async () => {
+  // init config
+  const config = await configManager.load()
+  console.log(`config: ${JSON.stringify(config)}`)
 
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 750,
-    title: "electron-vue3-template",
-    icon: iconPath,
+    title: "LLM Chat",
+    icon: getAppIcon(),
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
     },
