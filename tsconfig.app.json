@@ -19,7 +19,7 @@
   "include": [
     "src/renderer/**/*.ts",
     "src/renderer/**/*.vue",
-    "src/renderer/**/*.d.ts",
+    "src/types/**/*.d.ts",
     "src/renderer/index.css",
     "src/preload/index.ts"
   ]
