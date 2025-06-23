@@ -27,15 +27,19 @@ $ pnpm run dev
 $ pnpm run build
 ```
 
+```bash
+npx vue-tsc -p tsconfig.app.json --noEmit --watch
+```
+
 # Built-in
 
 - [Electron](http://www.electronjs.org/docs)
-- Vue3
+- [Vue3](https://cn.vuejs.org/guide/introduction.html)
 - [vue-router](https://next.router.vuejs.org/index.html)
-- Vite
-- TypeScript
-- Tailwind
-- Electron-builder
+- [Vite](https://cn.vitejs.dev/guide/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind](https://tailwindcss.com/docs/installation/using-vite)
+- [Electron-builder](https://www.electron.build/)
 - [Electron-vue](https://simulatedgreg.gitbooks.io/electron-vue/content/cn/)
 
 ## FAQ
