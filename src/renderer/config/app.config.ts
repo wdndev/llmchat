@@ -2,17 +2,7 @@ import { app } from 'electron'
 import path from 'path'
 import fs from 'fs/promises'
 
-export interface AppConfig {
-  language: 'zh' | 'en'
-  fontSize: number
-  providerConfigs: Record<string, Record<string, string>>
-}
-
-export const DEFAULT_CONFIG: AppConfig = {
-  language: 'zh',
-  fontSize: 14,
-  providerConfigs: {}
-}
+import { type AppConfig, DEFAULT_CONFIG } from '@/renderer/types/app.types'
 
 const configPath = path.join(app.getPath('userData'), 'config.json')
 let config = { ...DEFAULT_CONFIG }

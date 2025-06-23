@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@baiducloud/qianfan": "^0.2.3",
-    "mime-types": "^3.0.1",
     "openai": "^5.6.0",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-i18n": "11.1.1"
   },
   "devDependencies": {
     "@iconify/vue": "^5.0.0",
@@ -26,6 +26,8 @@
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",
+    "dayjs": "^1.11.13",
+    "mime-types": "^3.0.1",
     "electron": "^36.4.0",
     "electron-builder": "^26.0.12",
     "postcss": "^8.5.6",
@@ -34,6 +36,12 @@
     "vite": "^6.3.5",
     "vite-plugin-electron": "^0.29.0",
     "vite-plugin-electron-renderer": "^0.14.6",
-    "vue-tsc": "^2.2.10"
+    "markdown-it-highlightjs": "^4.2.0",
+    "vue-markdown-render": "^2.2.1",
+    "vue-tsc": "^2.2.10",
+    "dexie": "^4.0.11",
+    "pinia": "^3.0.3",
+    "radix-vue": "^1.9.17",
+    "vue-router": "^4.5.1"
   }
 }
