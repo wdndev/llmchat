@@ -49,8 +49,6 @@
         SelectLabel,
         SelectPortal,
         SelectRoot,
-        SelectScrollDownButton,
-        SelectScrollUpButton,
         SelectSeparator,
         SelectTrigger,
         SelectValue,

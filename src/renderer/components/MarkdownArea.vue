@@ -14,17 +14,17 @@ const props = defineProps<{
 }>()
 
 // 配置 markdown-it 和代码高亮
-const md = new MarkdownIt({
+const md: MarkdownIt= new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true,
-  highlight(code, lang) {
+  highlight(code: string, lang: string) {
     if (lang && hljs.getLanguage(lang)) {
       try {
         return `<pre class="hljs"><code>${hljs.highlight(code, { language: lang }).value}</code></pre>`
       } catch (_) {}
     }
-    return `<pre class="hljs"><code>${md.utils.escapeHtml(code)}</code></pre>`
+    return `<pre class="hljs"><code>${(md as any).utils.escapeHtml(code)}</code></pre>`
   },
 })
 

@@ -1,11 +1,11 @@
-import { app, BrowserWindow, net, protocol } from "electron";
+import { app, BrowserWindow, Tray, Menu, net, protocol } from "electron";
 import path from "path";
 import "dotenv/config";
 import url from 'url'
 
 import { configManager } from '@/renderer/config/app.config'
 import { registerIPC} from '@/main/modules/ipc'
-import { createMenu, updateMenu } from '@/main/modules/menu'
+import { createMenu } from '@/main/modules/menu'
 
 const getAppIcon = () => { 
   const devIconPath =
@@ -27,6 +27,7 @@ const getAppIcon = () => {
   console.log("iconPath:", iconPath);
   return iconPath;
 };
+
 const createWindow = async () => {
   // init config
   const config = await configManager.load()

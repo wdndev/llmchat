@@ -9,7 +9,8 @@ export class QianfanProvider extends BaseProvider {
     super()
     this.client = new ChatCompletion({ 
         QIANFAN_ACCESS_KEY: accessKey, 
-        QIANFAN_SECRET_KEY: secretKey 
+        QIANFAN_SECRET_KEY: secretKey,
+        ENABLE_OAUTH: false
     })
   }
   async chat(messages: ChatMessageProps[], model: string) {

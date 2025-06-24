@@ -1,11 +1,10 @@
-import { ipcMain, BrowserWindow, app, net } from 'electron'
+import { ipcMain, BrowserWindow, app } from 'electron'
 import { type CreateChatProps } from '@/renderer/types/ipc.types'
 import { createProvider } from '@/renderer/providers/createProvider'
 import { configManager } from '@/renderer/config/app.config'
 import { createContextMenu, updateMenu } from '@/main/modules/menu'
 import fs from 'fs/promises'
 import path from 'path'
-import url from 'url'
 
 export function registerIPC(mainWindow: BrowserWindow) {
     // Context menu handler
@@ -16,6 +15,7 @@ export function registerIPC(mainWindow: BrowserWindow) {
     }) 
     
     ipcMain.handle('copy-image-to-user-dir', async (event, dataUrl: string) => {
+        console.log('event', event);
         // 创建用户目录
         const userDataPath = app.getPath('userData');
         const imageDir = path.join(userDataPath, 'images');
@@ -46,6 +46,7 @@ export function registerIPC(mainWindow: BrowserWindow) {
 
     // Chat handler
     ipcMain.on('start-chat', async (event: Electron.IpcMainEvent, data: CreateChatProps) => { 
+        console.log('start-chat message event: ', event)
         console.log('start-chat message: ', data)
         const { messageId, providerName, selectedModel, messages } = data
         try {
@@ -78,6 +79,7 @@ export function registerIPC(mainWindow: BrowserWindow) {
     })
 
     ipcMain.handle('update-config', async (event, newConfig) => {
+        console.log('update-config: ', event)
         const updatedConfig = await configManager.update(newConfig)
         // 如果语言发生变化，更新菜单
         if (newConfig.language) {

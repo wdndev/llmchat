@@ -16,6 +16,7 @@
     import { ref, watch, onMounted, computed, nextTick} from 'vue'
     import { useRoute } from 'vue-router'
     import type {MessageProps, MessageStatus} from '@/renderer/types/chat.types'
+    import type { UpdatedStreamData } from '@/renderer/types/ipc.types'
     import type {MessageListIntance} from '@/renderer/types/app.types'
     import MessageInput from '@/renderer/components/MessageInput.vue'
     import MessageList from '@/renderer/components/MessageList.vue'
@@ -78,7 +79,7 @@
             creatingInitialMessage()
         }
     }
-    const lastQuestion = computed(() => messageStore.getLastQuestion(conversationId.value))
+    // const lastQuestion = computed(() => messageStore.getLastQuestion(conversationId.value))
 
     const messageScrollToBottom = async () => {
         await nextTick()
@@ -118,8 +119,8 @@
     // filteredMessages.value = messages.filter(message => message.conversationId === conversationId)
     // conversation.value = conversations.find(item => item.id === conversationId)
     
-    watch(() => route.params.id, async (newID: string) => {
-        conversationId.value = parseInt(newID)
+    watch(() => route.params.id, async (newID) => {
+        conversationId.value = parseInt(newID as string)
         await messageStore.fetchMessagesByConversationId(conversationId.value)
         await messageScrollToBottom()
         // filteredMessages.value = await db.messages.where({conversationId: conversationId.value}).toArray()
@@ -146,7 +147,7 @@
                 }
             }
         }
-        window.electronAPI.onUpdateMessage(async (streamData) => {
+        window.electronAPI.onUpdateMessage(async (streamData: UpdatedStreamData) => {
             console.log('streamData', streamData)
             const {messageId, data} = streamData
             streamContent += data.result

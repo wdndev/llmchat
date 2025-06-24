@@ -15,8 +15,6 @@
   "dependencies": {
     "@baiducloud/qianfan": "^0.2.3",
     "@types/markdown-it": "^14.1.2",
-    "electron": "^36.4.0",
-    "electron-builder": "^26.0.12",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "openai": "^5.6.0",
@@ -36,6 +34,8 @@
     "@typescript-eslint/parser": "^5.62.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/tsconfig": "^0.7.0",
+    "electron": "^36.4.0",
+    "electron-builder": "^26.0.12",
     "autoprefixer": "^10.4.21",
     "dayjs": "^1.11.13",
     "dexie": "^4.0.11",
@@ -45,7 +45,7 @@
     "radix-vue": "^1.9.17",
     "tailwindcss": "3.4.17",
     "ts-node": "^10.9.2",
-    "typescript": "~4.5.5",
+    "typescript": "~5.4.5",
     "vite": "^5.4.19",
     "vue-router": "^4.5.1",
     "vue-tsc": "^2.2.10"
