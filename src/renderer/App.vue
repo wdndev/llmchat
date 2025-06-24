@@ -17,7 +17,7 @@
         </RouterLink>
       </div>
     </dev>
-    <div class="h-full flex-1">
+    <div class="h-full flex-1 bg-white">
       <RouterView></RouterView>
        <!-- conversion -->
     </div>
