@@ -8,8 +8,14 @@ module.exports = {
     output: "release/${version}", // Package and output directory
     buildResources: "build",
   },
-  files: ["dist/**/*", "dist/main/**/*", "dist/preload/**/*"],
-
+  files: ["dist/**/*", "dist/main/**/*", "dist/preload/**/*", "assets/**/*"],
+  extraResources: [
+    {
+      from: "assets",
+      to: "assets",
+      filter: ["**/*"]
+    },
+  ],
   win: {
     icon: "assets/icons/win/app.ico",
     target: [
