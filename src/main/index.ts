@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Tray, Menu, net, protocol } from "electron";
+import { app, BrowserWindow, net, protocol } from "electron";
 import path from "path";
 import "dotenv/config";
 import url from 'url'
@@ -65,12 +65,8 @@ const createWindow = async () => {
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
   protocol.handle('safe-file', async (request) => {
-      console.log("request.url: ", request.url)
-      console.log(request.url)
       const filePath = decodeURIComponent(request.url.slice('safe-file://'.length))
-      console.log(filePath)
       const newFilePath = url.pathToFileURL(filePath).toString()
-      console.log(newFilePath)
       return net.fetch(newFilePath)
   })
 
