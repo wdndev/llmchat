@@ -5,8 +5,7 @@ import Home from '@/renderer/views/Home.vue'
 import Conversation from '@/renderer/views/Conversation.vue'
 import Settings from '@/renderer/views/Settings.vue'
 
-
-const routers = [
+export const routers = [
     {
         path: '/',
         name: 'home',

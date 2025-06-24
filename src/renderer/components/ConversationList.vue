@@ -58,6 +58,8 @@
         items: ConversationProps[]
     }>()
 
+    console.log("ConversationList props.items: ", props.items)
+
     const router = useRouter()
     const conversationStore = useConversationStore()
     const messageStore = useMessageStore()

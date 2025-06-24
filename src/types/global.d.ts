@@ -1,5 +1,14 @@
+import type { CreateChatProps, OnUpdatedCallback } from '@/renderer/types/ipc'
 export interface IElectronAPI {
-  startChat: (data: any) => void;
+    startChat: (data: CreateChatProps) => void;
+    onUpdateMessage: (callback: OnUpdatedCallback) => any;
+    copyImageToUserDir: (dataUrl: string) => Promise<string>;
+    getConfig: () => Promise<AppConfig>;
+    updateConfig: (newConfig: Partial<AppConfig>) => Promise<void>;
+    showContextMenu: (id: number) => void;
+    onDeleteConversation: (callback: (id: number) => void) => void;
+    onMenuNewConversation: (callback: () => void) => void;
+    onMenuOpenSettings: (callback: () => void) => void;
 }
 
 declare global {

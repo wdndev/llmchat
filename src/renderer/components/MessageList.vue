@@ -27,8 +27,9 @@
                             <span>{{ message.content }}</span>
                         </template>
                         <div v-else class="prose prose-slate prose-headings:my-1 prose-li:my-0 prose-ul:my-1 prose-p:my-1 prose-pre:p-0 prose-hr:hidden  prose-hr:my-1">
-                            <vue-markdown :source="message.content" :plugins="plugins"/>
+                            <!-- <vue-markdown :source="message.content" :plugins="plugins"/> -->
                             <!-- {{ message.content }} -->
+                            <MarkdownArea :markdown="message.content" />
                         </div>
                     </div>
                 </div>
@@ -61,17 +62,18 @@
     import { ref } from 'vue';
     import dayjs from 'dayjs';
     import {Icon} from '@iconify/vue'
-    import VueMarkdown from 'vue-markdown-render';
-    import markdownItHighlight from 'markdown-it-highlightjs';
+    // import VueMarkdown from 'vue-markdown-render';
+    // import markdownItHighlight from 'markdown-it-highlightjs';
     
     import {type MessageProps} from '@/renderer/types/chat.types'
+    import MarkdownArea from '@/renderer/components/MarkdownArea.vue'
     
 
     defineProps<{
         messages: MessageProps[]
     }>()
 
-    const plugins = [markdownItHighlight]
+    // const plugins = [markdownItHighlight]
     // 暴漏 ref
     const _ref = ref<HTMLDivElement>()
     defineExpose({ref: _ref} )

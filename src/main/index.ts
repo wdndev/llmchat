@@ -1,11 +1,11 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, net, protocol } from "electron";
 import path from "path";
 import "dotenv/config";
-// import { setupIPC } from '@/main/modules/ipc'
+import url from 'url'
 
-// import { configManager } from '@/renderer/config/app.config'
 import { configManager } from '@/renderer/config/app.config'
-import { createProvider} from '@/renderer/providers/createProvider'
+import { registerIPC} from '@/main/modules/ipc'
+import { createMenu, updateMenu } from '@/main/modules/menu'
 
 const getAppIcon = () => { 
   const devIconPath =
@@ -42,6 +42,10 @@ const createWindow = async () => {
     },
   });
 
+  createMenu(mainWindow)
+
+  registerIPC(mainWindow)
+
   // and load the index.html of the app.
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
@@ -59,6 +63,16 @@ const createWindow = async () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
+  protocol.handle('safe-file', async (request) => {
+      console.log("request.url: ", request.url)
+      console.log(request.url)
+      const filePath = decodeURIComponent(request.url.slice('safe-file://'.length))
+      console.log(filePath)
+      const newFilePath = url.pathToFileURL(filePath).toString()
+      console.log(newFilePath)
+      return net.fetch(newFilePath)
+  })
+
   createWindow();
 });
 
