@@ -5,7 +5,7 @@ import fs from 'fs/promises'
 import { type AppConfig, DEFAULT_CONFIG } from '@/renderer/types/app.types'
 
 const configPath = path.join(app.getPath('userData'), 'config.json')
-console.log("wwwwwwwwwwwwww: ", configPath)
+console.log("configPath: ", configPath)
 let config = { ...DEFAULT_CONFIG }
 
 export const configManager = {
