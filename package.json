@@ -2,9 +2,9 @@
   "name": "LLMChat",
   "productName": "LLMChat",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "author": "wnddev",
-  "description": "My Electron application description",
+  "description": "Develop LLM Chat Applications with Electron",
   "main": "dist/main/index.js",
   "scripts": {
     "dev": "vite",

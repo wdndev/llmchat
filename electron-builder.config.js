@@ -1,6 +1,6 @@
 module.exports = {
   productName: "LLM Chat",
-  appId: "com.electron.vue3ts",
+  appId: "io.github.wdndev",
   copyright: "Copyright © 2025",
   compression: "maximum",
   asar: true, // Compression of packaging format
@@ -17,7 +17,7 @@ module.exports = {
     },
   ],
   win: {
-    icon: "assets/icons/win/app.ico",
+    icon: "assets/icons/win32/app.ico",
     target: [
       {
         target: "nsis",
